@@ -199,6 +199,8 @@ function get_minimal_polytope(ray_list)
     cone = Polyhedron(A,b)
     LP = MixedIntegerLinearProgram(cone, ones(n_rays), convention = :min)
     _, ray_mults = solve_milp(LP)
+    
+    ray_mults = Array(ray_mults)
 
     ray_mults = Int64.(lcm(denominator.(ray_mults)) * numerator.(Array(ray_mults)))
 
@@ -217,7 +219,7 @@ end
 
 function get_inequalities(ray_list, pol)
     weights = Array{Int64}([])
-    verts = [Array{Int64}(numerator.(vert)) for vert in vertices(pol)]
+    verts = [Array{Int64}(numerator.(Array(vert))) for vert in vertices(pol)]
     for ray in ray_list
         weight = minimum([dot(ray, vert) for vert in verts])
         push!(weights, weight)
@@ -297,7 +299,7 @@ function cpt_discriminant_using_mixed_volumes(data1, data2, Sigma, face_list, ra
         push!(weight_list, weight)
     end
     @assert(all(denominator.(weight_list) .== 1))
-    weight_list = Int64.(numerator.(weight_list))
+    weight_list = Int64.(numerator.(Array(weight_list)))
 
     verts = pol_from_rays_and_mults(ray_list, weight_list)
     Discriminant = convex_hull(transpose(verts))
@@ -333,7 +335,7 @@ end
 # -------------  Output:
 # ray_list                          a List
 function compute_discriminantal_normal_fan(data1, data2, Sigma)
-    RR = TropicalSemiring(min)
+    RR = tropical_semiring(min)
 
     rays_of_Jacobian = rays(normal_fan(Sigma))
 
@@ -426,7 +428,7 @@ function get_auxillary_data(verts)
     no_origin = all([!all(verts[:,j].== 0) for j in 1:size(verts,2)])
 
 
-    RR = TropicalSemiring(min)
+    RR = tropical_semiring(min)
     V = transpose(verts)
     S,(x,y) = RR["x","y"]
     Support_Function = sum([   x^V[i, 1] * y^V[i, 2]  for i in 1:size(V, 1)  ])
