@@ -196,7 +196,7 @@ function get_minimal_polytope(ray_list)
     -one(MatrixSpace(ZZ,n_rays,n_rays))
     A = vcat(dualMat,-dualMat,-one(MatrixSpace(ZZ,n_rays,n_rays)))
     b = vcat(zeros(Int64, 2*size(dualMat,1)),-ones(Int64,n_rays))
-    cone = Polyhedron(A,b)
+    cone = Oscar.Polyhedron(A,b)
     LP = MixedIntegerLinearProgram(cone, ones(n_rays), convention = :min)
     _, ray_mults = solve_milp(LP)
     
@@ -413,7 +413,7 @@ function get_auxillary_data(verts)
     pol0 = convex_hull(transpose([verts [0;0]]))
     lpts = Vector{Vector{Int64}}(lattice_points(pol))
 
-    S,(z1,z2) = Oscar.PolynomialRing(ZZ,2)
+    S,(z1,z2) = Oscar.polynomial_ring(ZZ, ["z1", "z2"])
 
     A = filter(vert -> !(vert[1]==0 && vert[2]==0), lpts)
     m1 = minimum([vert[1] for vert in A])
