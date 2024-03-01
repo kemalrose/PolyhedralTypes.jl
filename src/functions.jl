@@ -571,7 +571,7 @@ end
 # -------------  Output:
 # mvol                  an integer
 function mixed_vol(verts1::Matrix, verts2::Matrix)
-    mvol = Int64(Polymake.polytope.mixed_volume(convex_hull(transpose(verts1)).pm_polytope, convex_hull(transpose(verts2)).pm_polytope))
+    mvol = Int64(Oscar.Polymake.polytope.mixed_volume(convex_hull(transpose(verts1)).pm_polytope, convex_hull(transpose(verts2)).pm_polytope))
     mvol = Int64(numerator(mvol))
     mvol
 end
@@ -583,7 +583,7 @@ end
 # -------------  Output:
 # mvol                  an integer
 function mixed_vol(pol1::Polyhedron, pol2::Polyhedron)
-    mvol = (Polymake.polytope.mixed_volume(pol1.pm_polytope, pol2.pm_polytope))
+    mvol = (Oscar.Polymake.polytope.mixed_volume(pol1.pm_polytope, pol2.pm_polytope))
     mvol = Int64(numerator(mvol))
     mvol
 end
